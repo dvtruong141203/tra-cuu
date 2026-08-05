@@ -70,7 +70,7 @@
     <!-- MÀN HÌNH LOADING -->
     <div id="screen-loading" class="screen active" style="justify-content: center; align-items: center;">
       <div class="spinner"></div>
-      <p style="color: var(--text-muted); font-weight: 600;">Đang tải dữ liệu từ máy chủ...</p>
+      <p style="color: var(--text-muted); font-weight: 600;">Đang tải dữ liệu từ hệ thống...</p>
     </div>
 
     <!-- MÀN HÌNH LỖI -->
@@ -166,7 +166,6 @@
         </div>
       </div>
       
-      <!-- Nút quay lại thu gọn -->
       <div style="margin-top: auto; padding-top: 10px; text-align: center;">
         <button class="btn-compact" onclick="switchScreen('detail')">← Quay lại chi tiết</button>
       </div>
@@ -175,9 +174,9 @@
 
   <script>
     // ==========================================
-    // 🚨 DÁN ĐƯỜNG LINK GOOGLE APP SCRIPT CỦA BẠN VÀO DÒNG BÊN DƯỚI
+    // ĐƯỜNG LINK GOOGLE SCRIPT CỦA BẠN ĐÃ ĐƯỢC GẮN VÀO ĐÂY
     // ==========================================
-    const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycb..._THAY_LINK_CUA_BAN_VAO_DAY.../exec";
+    const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbxGNzPtSc-oZjO-yq3GrqaXrvW1nnqJ-6yOGfD-Jv4ZzxorQQfHFGa9LvtOPg2CmHqv2w/exec";
     // ==========================================
 
     const BANK_ID = 'vietcombank';
@@ -198,7 +197,7 @@
         return;
       }
       
-      // Gọi API tải dữ liệu lần đầu
+      // Gọi API lấy dữ liệu lần đầu
       fetchData();
     };
 
@@ -288,7 +287,6 @@
       setTimeout(function() { a.classList.remove('show'); }, 1000);
     }
 
-    // Nút kiểm tra thủ công
     function manualCheck() {
       var btn = document.getElementById('btn-manual-check');
       var oldText = btn.innerText;
@@ -307,6 +305,8 @@
             renderData(result.data);
             if (String(result.data.status).toLowerCase() === 'đã thanh toán') {
               showToast("Thanh toán thành công!");
+            } else {
+              showCenterAlert("Chưa ghi nhận giao dịch");
             }
           } else {
             showCenterAlert("Chưa ghi nhận giao dịch");
@@ -327,12 +327,12 @@
         fetch(GOOGLE_API_URL + "?action=checkStatus&id=" + currentId)
           .then(res => res.json())
           .then(result => {
-            if (result.success && String(result.data.status).toLowerCase() === 'đã thanh toán') {
+            if (result.success && (String(result.data.status).toLowerCase() === 'đã thanh toán' || String(result.data.status).toLowerCase() === 'thành công')) {
               renderData(result.data);
               showToast("Thanh toán thành công!");
             }
           })
-          .catch(e => console.log("Polling error"));
+          .catch(e => console.log("Lỗi Polling"));
       }, 2000); 
     }
 
